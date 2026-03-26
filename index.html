@@ -9,7 +9,11 @@
     <!-- SheetJS: Excel & CSV parsing -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <!-- QRCode.js: QR generation -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script> -->
+    <!-- <script src="./qrcode.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/lib/browser.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/lib/browser.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -433,7 +437,7 @@
             padding: 0.8mm 2.5mm;
             font-weight: 600;
             font-size: 0.68rem;
-            border-bottom: 1px solid #ddd;
+            /* border-bottom: 1px solid #ddd; */
         }
 
         .top-bar-center {
@@ -486,7 +490,7 @@
         /* ── Student info section ───────────── */
         .student-section {
             border-top: 2px solid black;
-            padding: 2.5mm 3mm 0;
+            padding: 2.5mm 3mm;
         }
 
         .student-section-inner {
@@ -520,7 +524,7 @@
         /* ── Right column: Photo + QR ───────── */
         .right-col {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             gap: 2mm;
             flex-shrink: 0;
@@ -528,8 +532,8 @@
 
         .photo-box {
             border: 2px solid black;
-            width: 86px;
-            height: 104px;
+            width: 106px;
+            height: 128px;
             background: white;
             overflow: hidden;
             display: flex;
@@ -550,8 +554,8 @@
         }
 
         .qr-box {
-            width: 66px;
-            height: 66px;
+            width: 128px;
+            height: 128px;
             border: 1px solid #ddd;
             background: white;
             display: flex;
@@ -565,8 +569,9 @@
 
         .qr-box img {
             display: block;
-            width: 66px;
-            height: 66px;
+            width: 128px;
+            height: 128px;
+            padding: 5px;
         }
 
         /* ── Timetable section (optional) ───── */
@@ -803,6 +808,7 @@
     <!-- ════════════════════════════════════════
        JAVASCRIPT
   ═════════════════════════════════════════ -->
+
     <script>
         /* ── State ───────────────────────────────── */
         let students = [];
@@ -1038,7 +1044,6 @@
             data-roll="${esc(s.roll)}"
             data-sname="${esc(s.name)}"
             data-sclass="${esc(s.class)}">
-            <span>QR…</span>
           </div>
         </div>
       </div>
@@ -1077,13 +1082,14 @@
                 ].join('\n');
 
                 try {
-                    const url = await QRCode.toDataURL(text, {
-                        width: 66,
-                        margin: 1,
-                        color: { dark: '#000000', light: '#ffffff' },
+                    const qrcode = new QRCode(box, {
+                        text: text,
+                        width: 200,
+                        height: 200,
+                        // correctLevel: QRCode.CorrectLevel.H
                     });
-                    box.innerHTML = `<img src="${url}" alt="QR Code" />`;
-                } catch {
+                } catch (e) {
+                    console.error('QR error', e);
                     box.innerHTML = '<span style="font-size:0.5rem;color:#bbb">QR error</span>';
                 }
             }));
